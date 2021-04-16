@@ -11,6 +11,7 @@ namespace BusinessLayer.Abstract
     public interface IRentalService
     {
         IResult Add(Rental rental);
+        IResult Update(Rental rental);
         IResult DeleteRent(Rental rental);
         IResult DeliverCar(Rental rental);
         IDataResult<List<Rental>> GetAllRentals();

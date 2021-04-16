@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Concrete
 {
-    class CustomerManager : ICustomerService
+    public class CustomerManager : ICustomerService
     {
         ICustomerDal customerDal;
 

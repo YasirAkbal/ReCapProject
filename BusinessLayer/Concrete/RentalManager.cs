@@ -49,5 +49,11 @@ namespace BusinessLayer.Concrete
                 return new SuccessResult();
             }
         }
+
+        public IResult Update(Rental rental)
+        {
+            rentalDal.Update(rental);
+            return new SuccessResult();
+        }
     }
 }
