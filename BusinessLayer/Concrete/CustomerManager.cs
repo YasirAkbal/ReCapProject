@@ -12,33 +12,38 @@ namespace BusinessLayer.Concrete
 {
     public class CustomerManager : ICustomerService
     {
-        ICustomerDal customerDal;
+        ICustomerDal _customerDal;
 
         public CustomerManager(ICustomerDal customerDal)
         {
-            this.customerDal = customerDal;
+            this._customerDal = customerDal;
         }
 
         public IResult Add(Customer customer)
         {
-            customerDal.Add(customer);
+            _customerDal.Add(customer);
             return new SuccessResult();
         }
 
         public IResult Delete(Customer customer)
         {
-            customerDal.Delete(customer);
+            _customerDal.Delete(customer);
             return new SuccessResult();
         }
 
         public IDataResult<List<Customer>> GetAllCustomers()
         {
-            return new SuccessDataResult<List<Customer>>(customerDal.GetAll());
+            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll());
+        }
+
+        public IDataResult<Customer> GetById(int id)
+        {
+            return new SuccessDataResult<Customer>(_customerDal.Get(p=>p.CustomerId==id));
         }
 
         public IResult Update(Customer customer)
         {
-            customerDal.Update(customer);
+            _customerDal.Update(customer);
             return new SuccessResult();
         }
     }

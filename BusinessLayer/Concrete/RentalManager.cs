@@ -1,4 +1,6 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Constants;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -12,48 +14,56 @@ namespace BusinessLayer.Concrete
 {
     public class RentalManager : IRentalService
     {
-        IRentalDal rentalDal;
+        IRentalDal _rentalDal;
 
         public RentalManager(IRentalDal rentalDal)
         {
-            this.rentalDal = rentalDal;
+            this._rentalDal = rentalDal;
         }
 
         public IResult DeleteRent(Rental rental)
         {
-            rentalDal.Delete(rental);
+            _rentalDal.Delete(rental);
             return new SuccessResult();
         }
 
         public IResult DeliverCar(Rental rental)
         {
-            rentalDal.Delete(rental);
+            _rentalDal.Delete(rental);
             return new SuccessResult();
         }
 
         public IDataResult<List<Rental>> GetAllRentals()
         {
-            return new SuccessDataResult<List<Rental>>(rentalDal.GetAll());
+            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll());
         }
 
         public IResult Add(Rental rental)
         {
-            var isRented = rentalDal.GetAll(p=>p.CarId == rental.CarId).Any(p=>p.ReturnDate == null);
-            if(isRented)
+            var result = BusinessRule.Run(CheckCarIsRented(rental.CarId));
+            
+            if(result != null)
             {
-                return new ErrorResult("Araba teslim edilmemişken kiralanamaz.");
+                return result;
             }
-            else
-            {
-                rentalDal.Add(rental);
-                return new SuccessResult();
-            }
+            _rentalDal.Add(rental);
+            return new SuccessResult();
         }
 
         public IResult Update(Rental rental)
         {
-            rentalDal.Update(rental);
+            _rentalDal.Update(rental);
             return new SuccessResult();
+        }
+
+        private IResult CheckCarIsRented(int carId)
+        {
+            var isRented = _rentalDal.GetAll(p => p.CarId == carId).Any(p => p.ReturnDate == null);
+            if(isRented)
+            {
+                return new SuccessResult();
+            }
+            return new ErrorResult(Messages.CarIsNotReturned);
         }
     }
 }

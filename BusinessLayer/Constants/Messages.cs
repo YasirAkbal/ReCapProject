@@ -13,6 +13,6 @@ namespace BusinessLayer.Constants
         public static string ProductPriceInvalid = "Ürün fiyatı sıfırdan büyük olmalıdır.";
         public static string ProductDeletedSuccessfuly = "Ürün silme başarılı.";
         public static string ProductUpdatedSuccessfuly = "Ürün başarıyla güncellendi.";
-
+        public static string CarIsNotReturned = "Araba teslim edilmemişken kiralanamaz.";
     }
 }
