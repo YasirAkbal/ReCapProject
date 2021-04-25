@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Abstract;
+using BusinessLayer.Constants;
 using Core;
 using Core.Constants;
 using Core.DTOs;
@@ -18,6 +19,7 @@ namespace BusinessLayer.Concrete
     public class CarImageManager : ICarImageService
     {
         ICarImageDal _carImageDal;
+        private const int defaultCarImageId = 1;
 
         public CarImageManager(ICarImageDal carImageDal)
         {
@@ -26,6 +28,13 @@ namespace BusinessLayer.Concrete
 
         public IResult Add(CarImage carImage, FileDto fileDto)
         {
+            var result = BusinessRule.Run(CheckIfCarImageCountInRange(carImage.Id));
+
+            if(result == null)
+            {
+                return result;
+            }
+
             carImage.ImagePath = fileDto.FullPath;
             carImage.Date_ = DateTime.Now;
 
@@ -46,7 +55,15 @@ namespace BusinessLayer.Concrete
 
         public IDataResult<List<CarImage>> GetAllImagesByCarId(int carId)
         {
-            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(p => p.CarId == carId));
+            var result = BusinessRule.Run(CheckIfCarHasNoImage(carId));
+
+            if(result == null)
+            {
+                return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(c => c.Id == defaultCarImageId),
+                    result.Message);
+            }
+
+            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(c => c.CarId == carId));
         }
 
         public IDataResult<CarImage> GetByCarImageId(int carImageId)
@@ -60,6 +77,26 @@ namespace BusinessLayer.Concrete
             carImage.Date_ = DateTime.Now;
 
             _carImageDal.Update(carImage);
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfCarImageCountInRange(int carId)
+        {
+            var count = _carImageDal.GetAll(c => c.CarId == carId).Count;
+            if(count >= 5)
+            {
+                return new ErrorResult(Messages.CarImageCountRangeIsExceeded);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfCarHasNoImage(int carId)
+        {
+            var ifAnyCarImageExists = _carImageDal.GetAll(c => c.CarId == carId).Any();
+            if (ifAnyCarImageExists == false)
+            {
+                return new ErrorResult(Messages.CarHasNoImage);
+            }
             return new SuccessResult();
         }
 

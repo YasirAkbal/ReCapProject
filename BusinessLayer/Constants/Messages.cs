@@ -14,5 +14,7 @@ namespace BusinessLayer.Constants
         public static string ProductDeletedSuccessfuly = "Ürün silme başarılı.";
         public static string ProductUpdatedSuccessfuly = "Ürün başarıyla güncellendi.";
         public static string CarIsNotReturned = "Araba teslim edilmemişken kiralanamaz.";
+        public static string CarImageCountRangeIsExceeded = "En fazla 5 tana araba resmi eklenebilir.";
+        public static string CarHasNoImage = "Arabanin resmi yok, default bir resim gosteriliyor.";
     }
 }

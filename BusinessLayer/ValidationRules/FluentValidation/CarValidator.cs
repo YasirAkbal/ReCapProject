@@ -21,7 +21,7 @@ namespace BusinessLayer.ValidationRules.FluentValidation
             RuleFor(c => c.Description).MinimumLength(3);
 
             //custom rule. tanimlanan metot bool deger dondurmeli
-            RuleFor(c => c.Description).Must(StartWithA).WithMessage("Araba adi A harfi ile baslamalidir.");
+            //RuleFor(c => c.Description).Must(StartWithA).WithMessage("Araba adi A harfi ile baslamalidir.");
         }
 
         private bool StartWithA(string arg)
