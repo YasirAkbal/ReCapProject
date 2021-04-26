@@ -19,7 +19,7 @@ namespace BusinessLayer.Concrete
     public class CarImageManager : ICarImageService
     {
         ICarImageDal _carImageDal;
-        private const int defaultCarImageId = 1;
+        private const int _defaultCarImageId = 1;
 
         public CarImageManager(ICarImageDal carImageDal)
         {
@@ -30,7 +30,7 @@ namespace BusinessLayer.Concrete
         {
             var result = BusinessRule.Run(CheckIfCarImageCountInRange(carImage.Id));
 
-            if(result == null)
+            if(result != null)
             {
                 return result;
             }
@@ -57,10 +57,13 @@ namespace BusinessLayer.Concrete
         {
             var result = BusinessRule.Run(CheckIfCarHasNoImage(carId));
 
-            if(result == null)
+            if(result != null)
             {
-                return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(c => c.Id == defaultCarImageId),
-                    result.Message);
+                if (result.Message == Messages.CarHasNoImage)
+                    return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(c => c.Id == _defaultCarImageId),
+                        result.Message);
+                else
+                    return new ErrorDataResult<List<CarImage>>(result.Message);
             }
 
             return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(c => c.CarId == carId));
